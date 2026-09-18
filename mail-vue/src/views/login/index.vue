@@ -58,6 +58,7 @@
           </el-input>
           <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off" @keyup.enter="submit">
           </el-input>
+          <div v-if="loginVerifyEnabled" class="login-turnstile"></div>
           <el-button class="btn" type="primary" @click="submit" :loading="loginLoading"
           >{{ $t('loginBtn') }}
           </el-button>
@@ -171,7 +172,7 @@
 <script setup>
 import router from "@/router";
 import {useRoute} from "vue-router";
-import {computed, nextTick, reactive, ref} from "vue";
+import {computed, nextTick, reactive, ref, watch} from "vue";
 import {login} from "@/request/login.js";
 import {register} from "@/request/login.js";
 import {websiteConfig} from "@/request/setting.js";
@@ -279,6 +280,45 @@ const loginOpacity = computed(() => {
 })
 
 const hideLoginDomain = computed(() => settingStore.settings.loginDomain === 1)
+const loginVerifyEnabled = computed(() => settingStore.settings.loginVerify === 0)
+
+let loginVerifyToken = ''
+let loginTurnstileId = null
+let loginTurnstileRenderRetries = 0
+
+function renderLoginTurnstile() {
+  if (!loginVerifyEnabled.value || !settingStore.settings.siteKey) return
+
+  if (!window.turnstile) {
+    if (loginTurnstileRenderRetries++ < 10) setTimeout(renderLoginTurnstile, 500)
+    return
+  }
+
+  const element = document.querySelector('.login-turnstile')
+  if (!element) return
+
+  if (loginTurnstileId) {
+    window.turnstile.reset(loginTurnstileId)
+    return
+  }
+
+  loginTurnstileId = window.turnstile.render(element, {
+    sitekey: settingStore.settings.siteKey,
+    callback: (token) => { loginVerifyToken = token },
+    'error-callback': () => { loginVerifyToken = '' },
+    'expired-callback': () => { loginVerifyToken = '' },
+  })
+}
+
+watch([loginVerifyEnabled, () => settingStore.settings.siteKey], () => {
+  loginVerifyToken = ''
+  loginTurnstileRenderRetries = 0
+  if (!loginVerifyEnabled.value) {
+    loginTurnstileId = null
+    return
+  }
+  nextTick(renderLoginTurnstile)
+}, {immediate: true})
 
 const openSelect = () => {
   mySelect.value.toggleMenu()
@@ -437,9 +477,22 @@ const submit = () => {
     return
   }
 
+  if (loginVerifyEnabled.value && !loginVerifyToken) {
+    renderLoginTurnstile()
+    ElMessage({
+      message: t('botVerifyMsg'),
+      type: 'error',
+      plain: true,
+    })
+    return
+  }
+
   loginLoading.value = true
-  login(email, form.password).then(async data => {
+  login(email, form.password, loginVerifyToken).then(async data => {
     await saveToken(data.token)
+  }).catch(() => {
+    loginVerifyToken = ''
+    if (loginTurnstileId && window.turnstile) window.turnstile.reset(loginTurnstileId)
   }).finally(() => {
     loginLoading.value = false
   })
@@ -914,6 +967,11 @@ function submitRegister() {
 
 .register-turnstile {
   margin-bottom: 18px;
+}
+
+.login-turnstile {
+  min-height: 65px;
+  margin: 0 0 15px;
 }
 
 .select {

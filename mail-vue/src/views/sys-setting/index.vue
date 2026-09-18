@@ -338,6 +338,21 @@
                 </div>
               </div>
               <div class="setting-item">
+                <div><span>{{ $t('loginVerification') }}</span></div>
+                <div>
+                  <el-select
+                      @change="change"
+                      :style="`width: ${ locale === 'en' ? 100 : 80 }px;`"
+                      v-model="setting.loginVerify"
+                      placeholder="Select"
+                      class="bot-verify-select"
+                  >
+                    <el-option key="enabled" :value="0" :label="$t('enable')"/>
+                    <el-option key="disabled" :value="1" :label="$t('disable')"/>
+                  </el-select>
+                </div>
+              </div>
+              <div class="setting-item">
                 <div><span>{{ $t('addEmailVerification') }}</span></div>
                 <div>
                   <el-button class="opt-button" size="small" type="primary" @click="openAddVerifyCount">

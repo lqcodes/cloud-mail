@@ -33,6 +33,7 @@ const dbInit = {
 		await this.v3_2DB(c);
 		await this.v3_3DB(c);
 		await this.v3_4DB(c);
+		await this.v3_5DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
 	},
@@ -64,6 +65,14 @@ const dbInit = {
 		// Keep installations that still use the stock name aligned with the new branding,
 		// without overwriting titles that administrators have already customized.
 		await c.env.db.prepare(`UPDATE setting SET title = '云端笔记邮箱服务' WHERE title = 'Cloud Mail';`).run();
+	},
+
+	async v3_5DB(c) {
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN login_verify INTEGER NOT NULL DEFAULT 1;`).run();
+		} catch (e) {
+			console.warn(`跳过字段：${e.message}`);
+		}
 	},
 
 	async v3_2DB(c) {

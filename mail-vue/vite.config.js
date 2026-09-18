@@ -21,13 +21,13 @@ export default defineConfig(({mode}) => {
                 manifest: {
                     name: env.VITE_PWA_NAME,
                     short_name: env.VITE_PWA_NAME,
-                    background_color: '#FFFFFF',
-                    theme_color: '#FFFFFF',
+                    background_color: '#F5F8FF',
+                    theme_color: '#285DC4',
                     icons: [
                         {
-                            src: 'mail-pwa.png',
-                            sizes: '192x192',
-                            type: 'image/png',
+                            src: 'cloudnote-logo.webp',
+                            sizes: '384x384',
+                            type: 'image/webp',
                         }
                     ],
                 },

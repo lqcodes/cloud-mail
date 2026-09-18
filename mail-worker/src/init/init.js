@@ -32,6 +32,7 @@ const dbInit = {
 		await this.v3_1DB(c);
 		await this.v3_2DB(c);
 		await this.v3_3DB(c);
+		await this.v3_4DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
 	},
@@ -57,6 +58,12 @@ const dbInit = {
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
+	},
+
+	async v3_4DB(c) {
+		// Keep installations that still use the stock name aligned with the new branding,
+		// without overwriting titles that administrators have already customized.
+		await c.env.db.prepare(`UPDATE setting SET title = '云端笔记邮箱服务' WHERE title = 'Cloud Mail';`).run();
 	},
 
 	async v3_2DB(c) {
@@ -687,7 +694,7 @@ const dbInit = {
 			  INSERT INTO setting (
 				register, receive, add_email, many_email, title, auto_refresh, register_verify, add_email_verify
 			  )
-			  SELECT 0, 0, 0, 0, 'Cloud Mail', 0, 1, 1
+			  SELECT 0, 0, 0, 0, '云端笔记邮箱服务', 0, 1, 1
 			  WHERE NOT EXISTS (SELECT 1 FROM setting)
 			`).run();
 		} catch (e) {

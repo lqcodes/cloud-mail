@@ -8,9 +8,34 @@
       <div class="x5 cloud"></div>
     </div>
     <div v-else :style="background"></div>
-    <div class="form-wrapper">
+    <main class="login-layout">
+      <section class="brand-panel" aria-label="产品介绍">
+        <div class="brand-content">
+          <div class="brand-mark">
+            <img src="/cloudnote-logo.webp" alt="云端笔记邮箱服务" />
+            <span>CloudNote Mail</span>
+          </div>
+          <div class="brand-copy">
+            <p class="eyebrow">YOUR NOTES, IN YOUR INBOX</p>
+            <h1>云端笔记<br />邮箱服务</h1>
+            <p>将重要信息沉淀为清晰、有序的邮件与笔记，让每一次收发都成为知识的连接。</p>
+          </div>
+          <div class="feature-list" aria-label="服务特点">
+            <div><Icon icon="mingcute:cloud-line" width="20" height="20" /><span>云端同步，随时访问</span></div>
+            <div><Icon icon="mingcute:bookmark-line" width="20" height="20" /><span>收件即整理，灵感不遗漏</span></div>
+          </div>
+        </div>
+        <div class="panel-orb orb-one"></div>
+        <div class="panel-orb orb-two"></div>
+        <div class="panel-grid"></div>
+      </section>
+      <div class="form-wrapper">
       <div class="container">
-        <span class="form-title">{{ settingStore.settings.title }}</span>
+        <div class="mobile-brand">
+          <img src="/cloudnote-logo.webp" alt="云端笔记邮箱服务" />
+          <span>CloudNote Mail</span>
+        </div>
+        <span class="form-title">云端笔记邮箱服务</span>
         <span class="form-desc" v-if="show === 'login'">{{ $t('loginTitle') }}</span>
         <span class="form-desc" v-else>{{ $t('regTitle') }}</span>
         <div v-show="show === 'login'">
@@ -109,7 +134,8 @@
           </div>
         </template>
       </div>
-    </div>
+      </div>
+    </main>
     <el-dialog class="bind-dialog" v-model="showBindForm"  title="注册邮箱" >
       <div class="bind-container">
         <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="bindForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="bind">
@@ -632,64 +658,171 @@ function submitRegister() {
 
 <style lang="scss" scoped>
 
+.login-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 480px);
+  min-height: 100vh;
+  overflow: hidden;
+  background: #f5f8ff;
+}
+
+.brand-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: clamp(42px, 7vw, 112px);
+  color: #fff;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(154, 187, 255, .38), transparent 28%),
+    linear-gradient(137deg, #1d3b91 0%, #285dc4 48%, #4e7ef0 100%);
+}
+
+.brand-content {
+  position: relative;
+  z-index: 1;
+  max-width: 540px;
+}
+
+.brand-mark, .mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+.brand-mark img, .mobile-brand img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 11px;
+  filter: drop-shadow(0 5px 12px rgba(9, 26, 85, .22));
+}
+
+.brand-copy {
+  margin-top: clamp(76px, 13vh, 148px);
+}
+
+.eyebrow {
+  margin: 0 0 17px;
+  color: rgba(236, 243, 255, .76);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.brand-copy h1 {
+  margin: 0;
+  font-size: clamp(38px, 4.3vw, 58px);
+  font-weight: 700;
+  line-height: 1.17;
+  letter-spacing: .01em;
+}
+
+.brand-copy > p:last-child {
+  max-width: 430px;
+  margin: 25px 0 0;
+  color: rgba(241, 246, 255, .82);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.feature-list {
+  display: flex;
+  gap: 14px 28px;
+  flex-wrap: wrap;
+  margin-top: 48px;
+  color: rgba(250, 252, 255, .92);
+  font-size: 13px;
+}
+
+.feature-list div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: .58;
+}
+
+.orb-one {
+  right: -170px;
+  bottom: -150px;
+  width: 510px;
+  height: 510px;
+  background: rgba(191, 215, 255, .22);
+}
+
+.orb-two {
+  top: 25%;
+  right: 12%;
+  width: 96px;
+  height: 96px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: rgba(255, 255, 255, .06);
+}
+
+.panel-grid {
+  position: absolute;
+  inset: 0;
+  opacity: .18;
+  background-image: linear-gradient(rgba(255, 255, 255, .12) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .12) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to right, black, transparent 75%);
+}
+
 .form-wrapper {
-  position: fixed;
-  right: 0;
-  height: 100%;
+  position: relative;
   z-index: 10;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  @media (max-width: 767px) {
-    width: 100%;
-  }
 }
 
 .container {
-  background: v-bind(loginOpacity);
-  padding-left: 40px;
-  padding-right: 40px;
+  box-sizing: border-box;
+  width: min(100% - 48px, 384px);
+  padding: 42px 34px 36px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 450px;
-  height: 100%;
-  border-left: 1px solid var(--login-border);
-  box-shadow: var(--el-box-shadow-light);
-  @media (max-width: 1024px) {
-    padding: 20px 18px;
-    width: 384px;
-    margin-left: 18px;
-  }
-  @media (max-width: 767px) {
-    border: 1px solid var(--login-border);
-    padding: 20px 18px;
-    border-radius: 6px;
-    height: fit-content;
-    width: 100%;
-    margin-right: 18px;
-    margin-left: 18px;
-  }
+  border: 1px solid rgba(201, 213, 239, .78);
+  border-radius: 20px;
+  background: color-mix(in srgb, v-bind(loginOpacity) 92%, #fff);
+  box-shadow: 0 24px 60px rgba(38, 72, 143, .13);
+  backdrop-filter: blur(16px);
+
+  .mobile-brand { display: none; }
 
   .btn {
-    height: 36px;
+    height: 42px;
     width: 100%;
-    border-radius: 6px;
+    border-radius: 9px;
+    font-weight: 600;
   }
 
   .form-desc {
-    margin-top: 5px;
-    margin-bottom: 18px;
+    margin-top: 8px;
+    margin-bottom: 24px;
     color: var(--form-desc-color);
   }
 
   .form-title {
-    font-weight: bold;
-    font-size: 22px !important;
+    font-weight: 700;
+    font-size: 25px !important;
+    letter-spacing: .01em;
   }
 
   .switch {
-    margin-top: 20px;
+    margin-top: 23px;
     text-align: center;
 
     span {
@@ -699,24 +832,48 @@ function submitRegister() {
   }
 
   :deep(.el-input__wrapper) {
-    border-radius: 6px;
+    border-radius: 9px;
     background: var(--el-bg-color);
   }
 
   .email-input :deep(.el-input__wrapper) {
-    border-radius: 6px 0 0 6px;
+    border-radius: 9px 0 0 9px;
     background: var(--el-bg-color);
   }
 
   .el-input {
-    height: 38px;
+    height: 43px;
     width: 100%;
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 
     :deep(.el-input__inner) {
-      height: 36px;
+      height: 41px;
     }
   }
+}
+
+@media (max-width: 900px) {
+  .login-layout { grid-template-columns: minmax(0, 1fr) minmax(360px, 420px); }
+  .brand-panel { padding: 40px; }
+  .brand-copy { margin-top: 86px; }
+}
+
+@media (max-width: 700px) {
+  .login-layout {
+    display: block;
+    min-height: 100dvh;
+    background: linear-gradient(145deg, #e9f1ff, #f8faff 46%, #eaf1ff);
+  }
+  .brand-panel { display: none; }
+  .form-wrapper { min-height: 100dvh; padding: 24px 0; }
+  .container {
+    width: min(100% - 32px, 420px);
+    padding: 30px 24px 28px;
+    border-radius: 18px;
+  }
+  .container .mobile-brand { display: flex; margin-bottom: 29px; color: #234da9; }
+  .container .mobile-brand img { width: 34px; height: 34px; }
+  .container .form-title { font-size: 23px !important; }
 }
 
 :deep(.el-select-dropdown__item) {

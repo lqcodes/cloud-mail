@@ -43,5 +43,7 @@ crons = ["0 * * * *"]	#每小时执行；resetDaySendCount 仅在 UTC 0 点生�
 #admin = ""					#管理员的邮箱	示例: admin@example.com
 #jwt_secret = ""			#jwt令牌的密钥,随便填一串字符串
 
-# 前端请在发布前手动构建：cd ../mail-vue && pnpm build
-# 构建产物会输出到本目录的 ./dist，随后执行 pnpm deploy 发布。
+# 手动构建模式：发布前执行 cd ../mail-vue && pnpm build。
+# 如需恢复自动构建，取消以下两行的注释。
+[build]
+command = "pnpm --prefix ../mail-vue install && pnpm --prefix ../mail-vue run build"
